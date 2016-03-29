@@ -42,7 +42,67 @@ Read :How to access elements in 2D array when its first element address is passe
 P.S: The Above Problem is just a modified version of a popular BackTracking problem .
 */
 
+#include<malloc.h>
 #include "stdafx.h"
+
+
+int abs(int num){
+	if (num < 0){
+		return num*-1;
+	}
+	return num;
+}
+
+int correct(int* x, int i, int j){
+
+	if (i == 0){
+		return 1;
+	}
+	else{
+		int k;
+		for (k = 0; k < i; k++){
+			if ((x[k] == j) || (abs(x[k] - j) == abs(k - i))){
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
+void solve_n(int* x, int start, int n, int* var){
+	int i;
+	for (i = 0; i < n; i++){
+		if (x[n - 1] == -1){
+			if (correct(x, start, i)){
+				x[start] = i;
+				if (start == (n - 1)){
+					*var = 1;
+					return;
+				}
+				else{
+					solve_n(x, start + 1, n, var);
+				}
+			}
+		}
+	}
+}
+
 int solve_nsnipers(int *battlefield, int n){
+	if (battlefield){
+		int i;
+		int* x = (int*)malloc(sizeof(int)*n);
+		for (i = 0; i < n; i++){
+			x[i] = -1;
+		}
+		int var;
+		solve_n(x, 0, n, &var);
+		if (var == 1){
+			for (i = 0; i<n; i++){
+				int temp = (i * n) + x[i];
+				battlefield[temp] = 1;
+			}
+			return 1;
+		}
+	}
 	return 0;
 }

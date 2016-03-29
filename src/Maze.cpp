@@ -35,8 +35,68 @@ more parameters .
 
 #include<stdlib.h>
 
+int validxy(int*maze ,int x, int y,int prex,int prey,int rows,int columns){
+	if (prex == x && prey == y)
+		return 0;
+	if (x >= 0 && y >= 0 && x<rows && y<columns && (maze[(x*columns)+y] == 1))
+		return 1;
+	return 0;
+}
+
+void p_exists(int* maze, int rows, int cloumns, int x1, int y1, int x2, int y2, int prex, int prey, int* rv){
+	
+	if (validxy(maze, x1 - 1, y1, prex,prey,rows, cloumns)){
+		if ((x1 - 1 == x2) && (y1 == y2)){
+			*rv = 1;
+			return;
+		}
+		p_exists(maze, rows, cloumns, x1 - 1, y1, x2, y2, x1, y1, rv);
+	}
+	if (validxy(maze, x1 + 1, y1, prex, prey, rows, cloumns)){
+		if ((x1 + 1 == x2) && (y1 == y2)){
+			*rv = 1;
+			return;
+		}
+		p_exists(maze, rows, cloumns, x1 + 1, y1, x2, y2, x1, y1, rv);
+	}
+	if (validxy(maze, x1, y1 - 1, prex, prey, rows, cloumns)){
+		if ((x1 == x2) && (y1 - 1 == y2)){
+			*rv = 1;
+			return;
+		}
+		p_exists(maze, rows, cloumns, x1, y1 - 1, x2, y2, x1, y1, rv);
+	}
+	if (validxy(maze, x1, y1 + 1, prex, prey,rows, cloumns)){
+		if ((x1 == x2) && (y1 + 1 == y2)){
+			*rv = 1;
+			return;
+		}
+		p_exists(maze, rows, cloumns, x1, y1 + 1, x2, y2, x1, y1, rv);
+	}
+}
 
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	if (rows > 0 && columns > 0 && x1>=0 && x2>=0 && y1>=0 && y2>=0 && x1<rows && x2<rows && y1<columns && y2<columns){
+		if (maze[(x1*columns) + y1] == 1 && maze[(x2*columns) + y2] == 1){
+			if (rows == 1){
+				for (int i = y1; i <= y2; i++)
+					if (maze[i] == 0)
+						return 0;
+				return 1;
+			}
+			else if (columns == 1){
+				for (int i = x1; i <= x2; i++)
+					if (maze[i] == 0)
+						return 0;
+					return 1;
+			}
+			else{
+				int rv = 0;
+				p_exists(maze, rows, columns, x1, y1, x2, y2, x1, y1, &rv);
+				return rv;
+			}
+		}
+	}
+	return 0;
 }
